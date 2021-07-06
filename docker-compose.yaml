@@ -19,7 +19,8 @@ services:
   #   volumes:
   #     - .pgdata:/var/lib/postgresql/data
   #   environment:
-  #     - POSTGRES_PASSWORD=root
+  #     - POSTGRES_PASSWORD=root (WRONG)
+  #     - POSTGRES_PASSWORD=Postgres2020!
   #     - POSTGRES_DB=codebank
   #   ports:
   #     - "5432:5432"
@@ -30,8 +31,10 @@ services:
   #   image: dpage/pgadmin4
   #   tty: true
   #   environment:
-  #     - PGADMIN_DEFAULT_EMAIL=admin@user.com
-  #     - PGADMIN_DEFAULT_PASSWORD=123456
+  #     - PGADMIN_DEFAULT_EMAIL=admin@user.com (WRONG)
+  #     - PGADMIN_DEFAULT_PASSWORD=123456 (WRONG)
+  #     - PGADMIN_DEFAULT_EMAIL=renatospaka@gmail.com
+  #     - PGADMIN_DEFAULT_PASSWORD=PgAdmin2020!
   #   ports:
   #     - "9000:80"
   #   depends_on:

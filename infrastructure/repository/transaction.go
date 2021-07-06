@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
 
 	"github.com/renatospaka/code-bank/domain"
 )
@@ -49,8 +50,8 @@ func (t *TransactionRepositoryDb) SaveTransaction(transaction domain.Transaction
 }
 
 func (t *TransactionRepositoryDb) CreateCreditCard(creditcard domain.CreditCard) error {
-	stmt, err := t.db.Prepare(`insert into credit_cards (id, name, number, expiration_month, expiration_year, cvv, balance, balance_limit, created_at)
-														values (%1, %2, %3, %4, %5, %6, %7, %8, %9)`)
+	stmt, err := t.db.Prepare(`insert into credit_cards (id, name, number, expiration_month, expiration_year, cvv, balance, balance_limit)
+														values ($1, $2, $3, $4, $5, $6, $7, $8)`)
 	if err != nil {
 		return err
 	}
@@ -64,7 +65,6 @@ func (t *TransactionRepositoryDb) CreateCreditCard(creditcard domain.CreditCard)
 		creditcard.CVV,
 		creditcard.Balance,
 		creditcard.Limit,
-		creditcard.CreatedAt,
 	)
 	if err != nil {
 		return err
@@ -73,7 +73,17 @@ func (t *TransactionRepositoryDb) CreateCreditCard(creditcard domain.CreditCard)
 }
 
 func (t *TransactionRepositoryDb) GetCreditCard(creditcard domain.CreditCard) (domain.CreditCard, error) {
-	return domain.CreditCard{}, nil
+	var c domain.CreditCard
+	stmt, err := t.db.Prepare(`select id, balance, balance_limit from credit_cards where number = $1`)
+	if err != nil {
+		return c, err
+	}
+
+	if err = stmt.QueryRow(creditcard.Number).Scan(&c.ID, &c.Balance, &c.Limit); err != nil {
+		return c, errors.New("credit card number does not exist")
+	}
+
+	return c, nil
 }
 
 func (t *TransactionRepositoryDb) updateBalance(creditcard domain.CreditCard) error {
@@ -84,5 +94,3 @@ func (t *TransactionRepositoryDb) updateBalance(creditcard domain.CreditCard) er
 	}
 	return nil
 }
-
-1:23:13
