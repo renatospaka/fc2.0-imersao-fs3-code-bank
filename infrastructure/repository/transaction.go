@@ -85,3 +85,4 @@ func (t *TransactionRepositoryDb) updateBalance(creditcard domain.CreditCard) er
 	return nil
 }
 
+1:23:13
