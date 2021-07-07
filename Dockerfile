@@ -1,4 +1,5 @@
-FROM golang:1.16.5-stretch
+FROM golang:1.15
+#FROM golang:1.16.5-stretch
 
 WORKDIR /go/src
 ENV PATH="/go/bin:${PATH}"
