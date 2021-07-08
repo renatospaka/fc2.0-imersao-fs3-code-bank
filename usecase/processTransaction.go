@@ -20,11 +20,11 @@ func NewUseCaseTransaction(transactionRepository domain.TransactionRepository) U
 
 func (u UseCaseTransaction) ProcessTransaction(transactionDto dto.Transaction) (domain.Transaction, error) {
 	creditCard := u.hydrateCreditCard(transactionDto)
+
 	ccBalanceAndLimit, err := u.TransactionRepository.GetCreditCard(creditCard)
 	if err != nil {
 		return domain.Transaction{}, err
 	}
-
 	creditCard.ID = ccBalanceAndLimit.ID
 	creditCard.Limit = ccBalanceAndLimit.Limit
 	creditCard.Balance = ccBalanceAndLimit.Balance
@@ -64,7 +64,7 @@ func (u UseCaseTransaction) hydrateCreditCard(transactionDto dto.Transaction) do
 
 func (u UseCaseTransaction) newTransaction(transactionDto dto.Transaction, cc domain.CreditCard) *domain.Transaction {
 	t := domain.NewTransaction()
-	t.ID = cc.ID
+	t.CreditCardId = cc.ID
 	t.Amount = transactionDto.Amount
 	t.Store = transactionDto.Store
 	t.Description = transactionDto.Description

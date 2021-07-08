@@ -14,16 +14,14 @@ func NewKafkaProducer() KafkaProducer {
 }
 
 func (k *KafkaProducer) SetupProducer(bootstrapServer string) {
-	configMap := &kafka.ConfigMap{
-		"bootstrap.servers":bootstrapServer,
-	}
+	configMap := &kafka.ConfigMap{ "bootstrap.servers": bootstrapServer }
 	k.Producer, _ = ckafka.NewProducer(configMap)
 }
 
 func (k *KafkaProducer) Publish(msg string, topic string) error {
 	message := &ckafka.Message{
-    TopicPartition:     ckafka.TopicPartition{Topic: topic, Partition: ckafka.PartitionAny}
-    Value: []byte(msg),
+		TopicPartition: ckafka.TopicPartition{Topic: &topic, Partition: ckafka.PartitionAny},
+		Value:          []byte(msg),
 	}
 
 	err := k.Producer.Produce(message, nil)
