@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Conecta essa porra?",
+      "name": "From main.go",
       "type": "go",
       "request": "launch",
       "mode": "auto",

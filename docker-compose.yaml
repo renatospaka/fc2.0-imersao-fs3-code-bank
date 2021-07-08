@@ -12,32 +12,39 @@ services:
       - "host.docker.internal:172.17.0.1"
 
 ##por causa dos contêineres do postgres e pgadmin executando "por fora"
-  # db:
-  #   image: postgres:13.3
-  #   restart: always
-  #   tty: true
-  #   volumes:
-  #     - .pgdata:/var/lib/postgresql/data
-  #   environment:
-  #     - POSTGRES_PASSWORD=root (WRONG)
-  #     - POSTGRES_PASSWORD=Postgres2020!
-  #     - POSTGRES_DB=codebank
-  #   ports:
-  #     - "5432:5432"
-  #   extra_hosts:
-  #     - "host.docker.internal:172.17.0.1"
+  db:
+    image: postgres:13.3
+    hostname: postgres
+    container_name: postgres-compose
+    tty: true
+    restart: unless-stopped
+    volumes:
+      - .pgdata/postgresql/data:/var/lib/postgresql/data
+    environment:
+      #- POSTGRES_PASSWORD=root (WRONG)
+      - POSTGRES_PASSWORD=Postgres2020!
+      - POSTGRES_DB=codebank
+    ports:
+      - "5432:5432"
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
 
-  # pgadmin:
-  #   image: dpage/pgadmin4
-  #   tty: true
-  #   environment:
-  #     - PGADMIN_DEFAULT_EMAIL=admin@user.com (WRONG)
-  #     - PGADMIN_DEFAULT_PASSWORD=123456 (WRONG)
-  #     - PGADMIN_DEFAULT_EMAIL=renatospaka@gmail.com
-  #     - PGADMIN_DEFAULT_PASSWORD=PgAdmin2020!
-  #   ports:
-  #     - "9000:80"
-  #   depends_on:
-  #     - db
-  #   extra_hosts:
-  #     - "host.docker.internal:172.17.0.1"
+  pgadmin:
+    image: dpage/pgadmin4:5.4
+    hostname: pgadmin
+    container_name: pgadmin-compose
+    tty: true
+    restart: unless-stopped
+    volumes:
+      - .pgdata/pgadmin:/var/lib/pgadmin 
+    environment:
+      #- PGADMIN_DEFAULT_EMAIL=admin@user.com (WRONG)
+      #- PGADMIN_DEFAULT_PASSWORD=123456 (WRONG)
+      - PGADMIN_DEFAULT_EMAIL=renatospaka@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=PgAdmin2020!
+    ports:
+      - "9000:80"
+    depends_on:
+      - db
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
