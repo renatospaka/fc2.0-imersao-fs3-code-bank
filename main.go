@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/renatospaka/code-bank/domain"
 	"github.com/renatospaka/code-bank/infrastructure/grpc/server"
@@ -12,6 +14,16 @@ import (
 	"github.com/renatospaka/code-bank/infrastructure/repository"
 	"github.com/renatospaka/code-bank/usecase"
 )
+
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("Environment variables not set")
+		return
+	}
+	
+	log.Println("Environment are set")
+}
 
 func main() {
 	fmt.Println("Hello Code Bank")
@@ -27,20 +39,14 @@ func main() {
 }
 
 func setupDb() *sql.DB {
-	username := "postgres"
-	password := "Postgres2020!"
-	database := "codebank"
-	port := "5432"
-	host := "db"
-	//host := "host.docker.internal:15432"
-
 	//connection := fmt.Sprintf("port=%s user=%s password=%s dbname=%s sslmode=disable", 
 	connection := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", 
-		host,	
-		port,
-		username,
-		password,
-		database)
+		os.Getenv("host"),	
+		os.Getenv("port"),
+		os.Getenv("user"),
+		os.Getenv("password"),
+		os.Getenv("dbname"),
+	)
 
 	db, err := sql.Open("postgres", connection)
 	if err != nil {
@@ -60,7 +66,7 @@ func setupTransactionUseCase(db *sql.DB, producer kafka.KafkaProducer) usecase.U
 
 func setubKafkaProducer() kafka.KafkaProducer {
 	producer := kafka.NewKafkaProducer()
-	producer.SetupProducer("host.docker.internal:9094")
+	producer.SetupProducer(os.Getenv("KafkaBootstrapServers"))
 	log.Println("Kafka Producer running")
 	return producer
 }
